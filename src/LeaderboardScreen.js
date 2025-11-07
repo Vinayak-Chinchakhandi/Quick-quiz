@@ -20,15 +20,27 @@ function LeaderboardScreen() {
         });
         const data = await res.json();
         const usersData = data.record || [];
-        setUsers(usersData);
+
+        // ✅ Filter out invalid or empty placeholder objects
+        const validUsers = usersData.filter(
+          (u) =>
+            u &&
+            typeof u === "object" &&
+            Object.keys(u).length > 0 &&
+            u.email &&
+            u.name
+        );
+
+        setUsers(validUsers);
       } catch (err) {
         console.error("Error fetching leaderboard:", err);
       }
     };
+
     fetchLeaderboard();
   }, []);
 
-  // 🧠 Sort users by selected category
+  // 🧠 Sort by selected category (descending)
   const sortedUsers = [...users].sort(
     (a, b) => (b.scores?.[selectedCategory] || 0) - (a.scores?.[selectedCategory] || 0)
   );
@@ -36,7 +48,7 @@ function LeaderboardScreen() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-[90%] max-w-2xl text-center">
-        <h2 className="text-3xl font-bold mb-4 text-indigo-600">🏆 Leaderboard</h2>
+        <h2 className="text-3xl font-bold mb-4 text-indigo-700">🏆 Leaderboard</h2>
 
         {/* Category Selector */}
         <div className="flex justify-center flex-wrap gap-2 mb-6">
@@ -46,7 +58,7 @@ function LeaderboardScreen() {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                 selectedCategory === cat
-                  ? "bg-blue-600 text-white"
+                  ? "bg-indigo-600 text-white"
                   : "bg-gray-300 text-gray-700 hover:bg-gray-400"
               }`}
             >
@@ -65,18 +77,20 @@ function LeaderboardScreen() {
         {/* Leaderboard Entries */}
         <ul className="text-gray-800 text-sm">
           {sortedUsers.length > 0 ? (
-            sortedUsers.map((u, index) => (
-              <li
-                key={u.email || index}
-                className={`grid grid-cols-3 py-2 border-b ${
-                  u.email === currentUser ? "bg-yellow-100 font-semibold" : ""
-                }`}
-              >
-                <span>{index + 1}</span>
-                <span>{u.name}</span>
-                <span>{u.scores?.[selectedCategory] || 0}</span>
-              </li>
-            ))
+            sortedUsers.map((u, index) =>
+              u.name && u.email ? (
+                <li
+                  key={u.email || index}
+                  className={`grid grid-cols-3 py-2 border-b ${
+                    u.email === currentUser ? "bg-yellow-100 font-semibold" : ""
+                  }`}
+                >
+                  <span>{index + 1}</span>
+                  <span>{u.name}</span>
+                  <span>{u.scores?.[selectedCategory] || 0}</span>
+                </li>
+              ) : null
+            )
           ) : (
             <p className="text-gray-500 text-sm py-3">No players found.</p>
           )}
@@ -84,7 +98,7 @@ function LeaderboardScreen() {
 
         <button
           onClick={() => navigate("/start")}
-          className="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          className="mt-6 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
         >
           ⬅️ Back to Home
         </button>

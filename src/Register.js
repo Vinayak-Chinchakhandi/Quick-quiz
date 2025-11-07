@@ -12,7 +12,7 @@ const registerSchema = z.object({
     password: z
         .string()
         .min(3, "Minimum 4 characters")
-        .max(6, "Maximum 6 characters")
+        .max(12, "Maximum 12 characters")
         .regex(
             /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
             "Must include a capital letter, number, and special symbol"
