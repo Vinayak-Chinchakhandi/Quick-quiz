@@ -23,7 +23,7 @@ All data is managed securely through **JSONBin.io**, eliminating the need for a 
 
 | Layer | Technology |
 |-------|-------------|
-| **Frontend Framework** | React |
+| **Frontend** | React |
 | **Styling** | Tailwind CSS |
 | **Routing** | React Router |
 | **Validation** | Zod |
